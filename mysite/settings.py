@@ -11,12 +11,14 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 import environ
-env = environ.Env()
-root_path = environ.Path(__file__) - 2
-ENV = env('DJANGO_ENV')
-
 from pathlib import Path
 import os
+
+env = environ.Env()
+root_path = environ.Path(__file__) - 2
+env.read_env(env_file=root_path(".env"))
+
+ENV = env("ENV", default="prod")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
@@ -44,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'blog.apps.BlogConfig',
+    'taggit',
 ]
 
 MIDDLEWARE = [

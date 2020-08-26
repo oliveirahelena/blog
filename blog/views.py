@@ -1,4 +1,4 @@
-from django.contrib.postgres.search import SearchVector
+from django.contrib.postgres.search import TrigramSimilarity
 from django.core.mail import send_mail
 from django.core.paginator import PageNotAnInteger, EmptyPage, Paginator
 from django.db.models import Count
@@ -104,8 +104,8 @@ def post_search(request):
         if form.is_valid():
             query = form.cleaned_data['query']
             results = Post.objects.annotate(
-                search=SearchVector('title', 'body'),
-            ).filter(search=query)
+                similarity=TrigramSimilarity('title', query),
+            ).filter(similarity__gt=0.3).order_by('-similarity')
     return render(request,
                   'blog/post/search.html',
                   {'form': form,
